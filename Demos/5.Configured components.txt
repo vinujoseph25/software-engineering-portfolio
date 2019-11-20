@@ -1,0 +1,147 @@
+12. Configured components
++++++++++++++++++++++++++
+a. Alert
+--------
+import React, { Component } from 'react';
+import { View, StyleSheet, Alert, Button } from 'react-native';
+import { Constants } from 'expo';
+
+export default class App extends Component {
+  displayAlert(){
+    Alert.alert(
+      'Attention',
+      'This is a basic alert with message. Are you Ok with this?',
+      [
+        {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+        {text: 'OK', onPress: () => console.log('OK Pressed')},
+      ],
+      { cancelable: false }
+    )
+  } 
+  render() {
+		return (
+		  <View style={styles.container}>
+        <Button
+          onPress={this.displayAlert}
+          title="Display Alert"
+        />
+		  </View>
+		);
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    paddingTop: Constants.statusBarHeight,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
+})
+
+b. Modal
+--------
+import React, {Component} from 'react';
+import {Modal, Text, TouchableHighlight, Button ,View, Alert, StyleSheet} from 'react-native';
+import { Constants } from 'expo';
+
+export default class App extends Component {
+  state = {
+    toggleModal: false,
+  };
+  toggleModalVisibility() {
+    this.setState({toggleModal: !this.state.toggleModal});
+  }
+  render() {
+    return (
+      <View style={styles.container}>
+        <Modal animationType="slide" transparent={false} visible={this.state.toggleModal}
+          onDismiss={() => {
+            Alert.alert('Modal has been closed.');
+          }}>
+          <View style={{marginTop: Constants.statusBarHeight}}>
+            <View>
+              <Text>Use Modal to present content above an enclosing view</Text>
+              <Button onPress={() => {this.toggleModalVisibility();}}
+                title="Dismiss Modal"
+              />
+            </View>
+          </View>
+        </Modal>
+        <Button onPress={() => { this.toggleModalVisibility();}} title="Show Modal"/>
+      </View>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    paddingTop: Constants.statusBarHeight,
+    flex:1,
+    justifyContent: 'center',
+    alignItems:'center'
+  }
+})
+
+c. StatusBar
+------------
+import React, {Component} from 'react';
+import {Text,View , StatusBar, StyleSheet} from 'react-native';
+import { Constants } from 'expo';
+
+export default class App extends Component {
+  
+  render() {
+    return (
+      <View style={styles.container}>
+        <StatusBar networkActivityIndicatorVisible={true} hidden={false} />
+		    <Text>SatusBar Demo</Text>
+      </View>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    paddingTop: Constants.statusBarHeight,
+    flex:1,
+    justifyContent: 'center',
+    alignItems:'center'
+  }
+})
+
+d. WebView
+----------
+i.
+import React, {Component} from 'react';
+import {View,Text, WebView, StyleSheet} from 'react-native';
+import { Constants } from 'expo';
+
+export default class App extends Component {
+  render() {
+    return (
+      <WebView
+        originWhitelist={['*']}
+        source={{ uri: 'https://www.google.com/' }}
+        style={{marginTop: 20}}
+      />
+    );
+  }
+}
+
+ii.
+import React, {Component} from 'react';
+import {View,Text, WebView, StyleSheet} from 'react-native';
+import { Constants } from 'expo';
+
+export default class App extends Component {
+  render() {
+    return (
+      <WebView
+        originWhitelist={['*']}
+        source={{ html: '<h1>Hello world</h1>' }}
+        style={{marginTop: 20}}
+      />
+    );
+  }
+}

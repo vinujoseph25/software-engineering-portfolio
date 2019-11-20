@@ -1,0 +1,404 @@
+6. Lists
+++++++++
+a.ListView simple
+---------------
+import React, { Component } from 'react';
+import { ListView, Text, StyleSheet } from 'react-native';
+import { Constants } from 'expo';
+
+// Row data (hard-coded)
+const rows = [
+  {id: 0, text: 'Item 1'},
+  {id: 1, text: 'Item 2'},
+  {id: 2, text: 'Item 3'},
+  {id: 3, text: 'Item 4'},
+  {id: 4, text: 'Item 5'},
+  {id: 5, text: 'Item 6'},
+  {id: 6, text: 'Item 7'},
+  {id: 7, text: 'Item 8'},
+  {id: 8, text: 'Item 9'},
+  {id: 9, text: 'Item 10'},
+  {id: 10, text: 'Item 11'},
+  {id: 11, text: 'Item 12'},
+  {id: 12, text: 'Item 13'},
+  {id: 13, text: 'Item 14'}
+]
+
+// Row comparison function
+const rowHasChanged = (r1, r2) => r1.id !== r2.id
+
+// DataSource template object
+const ds = new ListView.DataSource({rowHasChanged})
+
+export default class App extends Component {
+
+  constructor(){
+    super();
+    this.state = {
+      dataSource: ds.cloneWithRows(rows)
+    }
+  }
+ 
+  renderRow = (rowData) => {
+    return (
+      <Text style={styles.row}>
+        {rowData.text}
+      </Text>
+    )
+  }
+
+  render() {
+    return (
+      <ListView
+        style={styles.container}
+        dataSource={this.state.dataSource}
+        renderRow={this.renderRow}
+      />
+    )
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    paddingTop: Constants.statusBarHeight,
+    flex: 1
+  },
+  row: {
+    padding: 15,
+    marginBottom: 5,
+    backgroundColor: 'skyblue'
+  }
+})
+
+b. ListView with sections
+-------------------------
+import React, { Component } from 'react';
+import { ListView, Text, StyleSheet } from 'react-native';
+import { Constants } from 'expo';
+
+// Row data (hard-coded)
+const rows = {
+  'Section 1': [
+    {id: 0, text: 'Item 1'},
+    {id: 1, text: 'Item 2'},
+    {id: 2, text: 'Item 3'},
+    {id: 3, text: 'Item 4'},
+    {id: 4, text: 'Item 5'},
+    {id: 5, text: 'Item 6'},
+    {id: 6, text: 'Item 7'},
+    {id: 7, text: 'Item 8'},
+    {id: 8, text: 'Item 9'}
+  ],
+  'Section 2': [
+    {id: 9, text: 'Item 1'},
+    {id: 10, text: 'Item 2'},
+    {id: 11, text: 'Item 3'},
+    {id: 12, text: 'Item 4'},
+    {id: 13, text: 'Item 5'}
+  ],
+}
+
+// Row and section comparison functions
+const rowHasChanged = (r1, r2) => r1.id !== r2.id
+const sectionHeaderHasChanged = (s1, s2) => s1 !== s2
+
+// DataSource template object
+const ds = new ListView.DataSource({rowHasChanged, sectionHeaderHasChanged})
+
+export default class App extends Component {
+
+  state = {
+    dataSource: ds.cloneWithRowsAndSections(rows)
+  }
+
+  renderRow = (rowData, sectionId) => {
+    return (
+      <Text style={styles.row}>
+        {rowData.text}
+      </Text>
+    )
+  }
+
+  renderSectionHeader = (sectionRows, sectionId) => {
+    return (
+      <Text style={styles.header}>
+        {sectionId} ({sectionRows.length})
+      </Text>
+    )
+  }
+
+  render() {
+    return (
+      <ListView
+        style={styles.container}
+        dataSource={this.state.dataSource}
+        renderRow={this.renderRow}
+        renderSectionHeader={this.renderSectionHeader}
+      />
+    )
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    paddingTop: Constants.statusBarHeight,
+    flex: 1
+  },
+  row: {
+    padding: 15,
+    marginBottom: 5,
+    backgroundColor: 'skyblue'
+  },
+  header: {
+    padding: 15,
+    marginBottom: 5,
+    backgroundColor: 'steelblue',
+    color: 'white',
+    fontWeight: 'bold'
+  },
+})
+
+
+c. Flatlist
+--------
+import React, { Component } from 'react';
+import { FlatList, Text, StyleSheet } from 'react-native';
+import { Constants } from 'expo';
+
+const rows = [
+  {id: '0', text: 'Item 1'},
+  {id: '1', text: 'Item 2'},
+  {id: '2', text: 'Item 3'},
+  {id: '3', text: 'Item 4'},
+  {id: '4', text: 'Item 5'},
+  {id: '5', text: 'Item 6'},
+  {id: '6', text: 'Item 7'},
+  {id: '7', text: 'Item 8'},
+  {id: '8', text: 'Item 9'},
+  {id: '9', text: 'Item 10'},
+  {id: '10', text: 'Item 11'},
+  {id: '11', text: 'Item 12'},
+  {id: '12', text: 'Item 13'},
+  {id: '13', text: 'Item 14'},
+  {id: '14', text: 'Item 15'}
+]
+
+const extractKey = ({id}) => id
+
+export default class App extends Component {
+  
+  renderItem = ({item}) => {
+    return (
+      <Text style={styles.row}>
+        {item.text}
+      </Text>
+    )
+  }
+  
+  render() {
+    return (
+      <FlatList
+        style={styles.container}
+        data={rows}
+        renderItem={this.renderItem}
+        keyExtractor={extractKey}
+      />
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    paddingTop: Constants.statusBarHeight,
+    flex: 1
+  },
+  row: {
+    padding: 12,
+    marginBottom: 5,
+    backgroundColor: 'skyblue'
+  }
+})
+
+d. SectionList (homogenous)
+-----------
+import React, { Component } from 'react';
+import { SectionList, Text, StyleSheet } from 'react-native';
+import { Constants} from 'expo';
+
+const sections = [
+  {
+    id: 0,
+    title: 'Section 1',
+    data: [
+      {id: 0, text: 'Item 1'},
+      {id: 1, text: 'Item 2'},
+      {id: 2, text: 'Item 3'},
+      {id: 3, text: 'Item 4'},
+      {id: 4, text: 'Item 5'},
+      {id: 5, text: 'Item 6'},
+      {id: 6, text: 'Item 7'},
+      {id: 7, text: 'Item 8'},
+      {id: 8, text: 'Item 9'}
+    ]
+  },
+  {
+    id: 1,
+    title: 'Section 2',
+    data: [
+      {id: 9, text: 'Item 1'},
+      {id: 10, text: 'Item 2'},
+      {id: 11, text: 'Item 3'},
+      {id: 12, text: 'Item 4'},
+      {id: 13, text: 'Item 5'}
+    ]
+  }
+]
+
+const extractKey = ({id}) => id
+
+export default class App extends Component {
+  
+  renderItem = ({item}) => {
+    return (
+      <Text style={styles.row}>
+        {item.text}
+      </Text>
+    )
+  }
+  
+  renderSectionHeader = ({section}) => {
+    return (
+      <Text style={styles.header}>
+        {section.title}
+      </Text>
+    )
+  }
+  
+  render() {
+    return (
+      <SectionList
+        style={styles.container}
+        sections={sections}
+        renderItem={this.renderItem}
+        renderSectionHeader={this.renderSectionHeader}
+        keyExtractor={extractKey}
+      />
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    paddingTop: Constants.statusBarHeight,
+    flex: 1,
+  },
+  row: {
+    padding: 15,
+    marginBottom: 5,
+    backgroundColor: 'skyblue',
+  },
+  header: {
+    padding: 15,
+    marginBottom: 5,
+    backgroundColor: 'steelblue',
+    color: 'white',
+    fontWeight: 'bold',
+  },
+})
+
+e. SectionList	(Heterogenous)
+---------------------------
+import React, { Component } from 'react';
+import { SectionList, Text, StyleSheet } from 'react-native';
+import { Constants } from 'expo';
+
+const sections = [
+  {
+    id: 0,
+    title: 'Section 1',
+    data: [
+      {id: 0, text: 'Item 1'},
+      {id: 1, text: 'Item 2'},
+      {id: 2, text: 'Item 3'},
+      {id: 3, text: 'Item 4'},
+      {id: 4, text: 'Item 5'},
+      {id: 5, text: 'Item 6'},
+      {id: 6, text: 'Item 7'},
+      {id: 7, text: 'Item 8'},
+      {id: 8, text: 'Item 9'}
+    ],
+    renderItem: ({item}) => {
+      return (
+        <Text style={styles.rowSec1}>
+          {item.text}
+        </Text>
+      )
+    }
+  },
+  {
+    id: 1,
+    title: 'Section 2',
+    data: [
+      {id: 9, text: 'Item 1'},
+      {id: 10, text: 'Item 2'},
+      {id: 11, text: 'Item 3'},
+      {id: 12, text: 'Item 4'},
+      {id: 13, text: 'Item 5'}
+    ],
+    renderItem: ({item}) => {
+      return (
+        <Text style={styles.rowSec2}>
+          {item.text}
+        </Text>
+      )
+    }
+  }
+]
+
+const extractKey = ({id}) => id
+
+export default class App extends Component {
+  
+  renderSectionHeader = ({section}) => {
+    return (
+      <Text style={styles.header}>
+        {section.title}
+      </Text>
+    )
+  }
+  
+  render() {
+    return (
+      <SectionList
+        style={styles.container}
+        sections={sections}
+        renderSectionHeader={this.renderSectionHeader}
+        keyExtractor={extractKey}
+      />
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    paddingTop: Constants.statusBarHeight,
+    flex: 1,
+  },
+  rowSec1: {
+    padding: 15,
+    marginBottom: 5,
+    backgroundColor: 'skyblue',
+  },
+  rowSec2: {
+    padding: 15,
+    marginBottom: 5,
+    backgroundColor: 'steelblue'
+  },
+  header: {
+    padding: 15,
+    marginBottom: 5,
+    backgroundColor: 'darkblue',
+    color: 'white',
+    fontWeight: 'bold',
+  }
+})

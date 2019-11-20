@@ -1,0 +1,216 @@
+16. Animation
+=============
+a. Animated API
+---------------
+import React, { Component } from 'react';
+import { StyleSheet, Text, TouchableOpacity, Animated } from 'react-native';
+import { Constants } from 'expo'; 
+
+// Wrap a component to make it animatable
+const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity)
+
+export default class App extends Component {
+  state = {height: new Animated.Value(100)}
+
+  startAnimation = () => {
+    const {height} = this.state
+    // Reset the value if needed
+    height.setValue(100)
+    // Start a spring animation
+    Animated.spring(height, {toValue: 300, friction: 0.8}).start()
+  }
+
+  componentDidMount() {
+    this.startAnimation()
+  }
+
+  render() {
+    const {height} = this.state;
+    return (
+      <AnimatedTouchableOpacity
+        onPress={this.startAnimation}
+        style={[styles.button, {height}]}
+      >
+        <Text style={styles.text}>
+          Tap Me
+        </Text>
+      </AnimatedTouchableOpacity>
+    )
+  }
+}
+
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: 'skyblue',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  text: {
+    color: 'white',
+    fontSize: 42
+  }
+})
+
+b.React Native Animatable
+-------------------------
+import React, { Component } from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, Animated } from 'react-native'
+import * as Animatable from 'react-native-animatable'
+
+const colors = ['#7986CB', '#5C6BC0', '#3F51B5', '#3949AB', '#303F9F']
+const animations = ['fadeIn', 'shake', 'rubberBand', 'zoomOut']
+
+export default class App extends Component {
+  state = {animation: animations[0]}
+
+  nextAnimation = () => {
+    const {animation} = this.state
+    const nextIndex = (animations.indexOf(animation) + 1) % animations.length
+    this.setState({animation: animations[nextIndex]})
+  }
+
+  renderItem = (color, i) => {
+    const {animation} = this.state
+    return (
+      <Animatable.View
+        key={i}
+        animation={animation}
+        delay={i * 100}
+        style={[styles.button, {backgroundColor: color}]}
+      >
+        <Text style={styles.text}>{i}</Text>
+      </Animatable.View>
+    )
+  }
+
+  render() {
+    const {animation} = this.state
+    return (
+      <TouchableOpacity
+        // use key to force a re-render when we switch animations
+        key={animation}
+        onPress={this.nextAnimation}
+      >
+        {colors.map(this.renderItem)}
+      </TouchableOpacity>
+    )
+  }
+}
+
+const styles = StyleSheet.create({
+  button: {
+    height: 80,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  text: {
+    color: 'white',
+    fontSize: 20
+  },
+})
+
+c. Gestures
+-----------
+import React, { Component } from 'react'
+import { StyleSheet, View, Text, PanResponder } from 'react-native'
+
+export default class App extends Component {
+  state = {
+    dragging: false,
+    initialTop: 50,
+    initialLeft: 50,
+    offsetTop: 0,
+    offsetLeft: 0,
+  }
+
+  panResponder = {}
+
+  componentWillMount() {
+    this.panResponder = PanResponder.create({
+      onStartShouldSetPanResponder: this.handleStartShouldSetPanResponder,
+      onPanResponderGrant: this.handlePanResponderGrant,
+      onPanResponderMove: this.handlePanResponderMove,
+      onPanResponderRelease: this.handlePanResponderEnd,
+      onPanResponderTerminate: this.handlePanResponderEnd,
+    })
+  }
+
+  render() {
+    const {dragging, initialTop, initialLeft, offsetTop, offsetLeft} = this.state
+
+    // Update style with the state of the drag thus far
+    const style = {
+      backgroundColor: dragging ? 'skyblue' : 'steelblue',
+      top: initialTop + offsetTop,
+      left: initialLeft + offsetLeft,
+    }
+
+    return (
+      <View style={styles.container}>
+        <View
+          // Put all panHandlers into the View's props
+          {...this.panResponder.panHandlers}
+          style={[styles.square, style]}
+        >
+          <Text style={styles.text}>
+            DRAG ME
+          </Text>
+        </View>
+      </View>
+    )
+  }
+
+  // Should we become active when the user presses down on the square?
+  handleStartShouldSetPanResponder = (e, gestureState) => {
+    return true
+  }
+
+  // We were granted responder status! Let's update the UI
+  handlePanResponderGrant = (e, gestureState) => {
+    this.setState({dragging: true})
+  }
+
+  // Every time the touch/mouse moves
+  handlePanResponderMove = (e, gestureState) => {
+
+    // Keep track of how far we've moved in total (dx and dy)
+    this.setState({
+      offsetTop: gestureState.dy,
+      offsetLeft: gestureState.dx,
+    })
+  }
+
+  // When the touch/mouse is lifted
+  handlePanResponderEnd = (e, gestureState) => {
+    const {initialTop, initialLeft} = this.state
+
+    // The drag is finished. Set the initialTop and initialLeft so that
+    // the new position sticks. Reset offsetTop and offsetLeft for the next drag.
+    this.setState({
+      dragging: false,
+      initialTop: initialTop + gestureState.dy,
+      initialLeft: initialLeft + gestureState.dx,
+      offsetTop: 0,
+      offsetLeft: 0,
+    })
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  square: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    width: 100,
+    height: 100,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  text: {
+    color: 'white',
+    fontSize: 12
+  }
+})

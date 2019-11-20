@@ -1,0 +1,92 @@
+17.Platform specific code
+=========================
+a. Platform.OS
+--------------
+import React, { Component } from 'react';
+import {Platform, View, StyleSheet} from 'react-native';
+import { Constants } from 'expo';
+import GreetingAndroid from './components/GreetingAndroid';
+import GreetingIOS from './components/GreetingIOS';
+
+const Greeting = (Platform.OS === 'ios')? GreetingIOS: GreetingAndroid;
+export default class App extends Component {
+  render(){
+    return(
+      <View style={styles.container}>
+        <Greeting />
+      </View>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+	backgroundColor: 'whitesmoke'
+  }
+});
+
+GreetingAndroid
+----------------
+import * as React from 'react';
+import { Text } from 'react-native';
+
+export default class GreetingAndroid extends React.Component{
+  render() {
+    return(
+      <Text> Hello from Android </Text>
+    );
+  }
+}
+
+GreetingIOS
+-----------
+import * as React from 'react';
+import { Text } from 'react-native';
+
+export default class GreetingIOS extends React.Component{
+  render() {
+    return(
+      <Text> Hello from IOS </Text>
+    );
+  }
+}
+
+b. Platform.select
+------------------
+import React, { Component } from 'react';
+import {Platform, View, StyleSheet} from 'react-native';
+import { Constants } from 'expo';
+import GreetingAndroid from './components/GreetingAndroid';
+import GreetingIOS from './components/GreetingIOS';
+
+const Greeting = (Platform.OS === 'ios')? GreetingIOS: GreetingAndroid;
+
+export default class App extends Component {
+  render(){
+    return(
+      <View style={styles.container}>
+        <Greeting />
+      </View>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: Constants.statusBarHeight,
+    ...Platform.select({
+      ios: {
+        backgroundColor: 'skyblue',
+      },
+      android: {
+        backgroundColor: 'steelblue',
+      },
+    }),
+  }
+});

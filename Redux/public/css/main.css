@@ -1,0 +1,120 @@
+.viewBox{
+    background-color:#ffffff;
+    width:200px;
+    float:right;
+    margin-right:13%;
+    box-shadow: 0px 0px 3px #000000;
+}
+
+.totalBox{
+    width:200px;
+    color: #ffffff;
+    background-color: #0d0d0d;
+    height:40px;
+    line-height: 40px;
+    padding-left: 20px;
+}
+
+.reBttn{
+    border:0;
+    background-color: #ff4d4d;
+    border-bottom:2px solid #ff1a1a;
+    margin-bottom:10px;
+    color: #ffffff;
+    font-weight: bold;
+    height:30px;
+}
+ul{
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.listBox{
+    margin:10px;
+    width:200px;
+    margin-top: 40px;
+    margin-left: 10px;
+    margin-bottom: 20px;
+}
+.viewBox li{
+    height:50px;
+    margin-bottom: 20px;
+}
+
+.imgBo{
+    height:300px;
+    width:200px;
+    float:left;
+    margin: 30px;
+}
+
+.detailbox {
+    height:400px;
+    width:600px;
+    background-color:#ffffff;
+    border:4px solid navy;
+    margin:50px;
+    box-shadow: 0px 0px 5px #000000;
+}
+
+.descImg{
+    border:2px solid #cccccc;
+    margin: 10px;
+    height:370px;
+    width: 260px;
+    box-shadow: 0px 0px 1px #000000;
+}
+
+.descBox{
+    float: left;
+    margin:20px;
+    margin-top: 40px;
+    width:250px;
+}
+
+.selectBox{
+    width:200px;
+    height:30px;
+}
+
+.addCartBox{
+    width:200px;
+    height:35px;
+    border-radius: 0;
+    border:0;
+    border-bottom: 4px solid #145214;
+    background-color:#29a329;
+    color: #ffffff;
+}
+
+.paymentPage{
+    background-color: #cccccc;
+    width:751px;
+    margin:20px;
+    margin-top:50px;
+}
+
+.paymentPage th{
+    width:150px;
+    height:30px;
+    background-color: #ffcc00;
+    border:1px solid #ffffff;
+    padding-left: 5px;
+    color: #ffffff;
+}
+
+.paymentPage td{
+    width:150px;
+    height:80px;
+    background-color: #ffe0b3;
+    border:1px solid #ffffff;
+    padding-left: 10px;
+    color: #000000;
+    font-size:15px;
+    padding-top: 2px;
+}
+
+.placeOrderButton{
+    margin-top:40px;
+    margin-left:350px;
+}

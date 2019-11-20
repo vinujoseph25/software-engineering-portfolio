@@ -1,0 +1,216 @@
+1.HelloWorld
+++++++++++++
+import React, {Component} from 'react';
+import { View, Text} from 'react-native';
+
+export default class App extends Component {
+  render() {
+    return (
+      <View>
+        <Text>Hello, Welcome to React Native!!!</Text>
+      </View>
+    )
+  }
+}
+
+2. StyleSheet
++++++++++++++
+a)Notice benefit of expo import and use of State like in React
+--------------------------------------------------------------
+import React, {Component} from 'react';
+import { View, Text, StyleSheet} from 'react-native';
+import { Constants } from 'expo';
+
+export default class App extends Component {
+  constructor(){
+    super();
+    this.state={
+      user:"Nevil"
+    }
+  }
+  render() {
+    return (
+      <View style={styles.container}>
+        <Text>Hello {this.state.user}, Welcome to React Native!!!</Text>
+      </View>
+    )
+  }
+}
+
+const styles = StyleSheet.create({
+  container:{
+    paddingTop: Constants.statusBarHeight
+  }
+})
+
+b)View inside a view
+--------------------
+import React, {Component} from 'react';
+import { View, StyleSheet} from 'react-native';
+
+export default class App extends Component {
+  constructor(){
+    super();
+  }
+  render() {
+    return (
+      <View style={styles.container}>
+        <View style={styles.box}></View>
+      </View>
+    )
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  box:{
+    width:200,
+    height: 200,
+    backgroundColor: 'skyblue',
+    borderWidth: 2,
+    borderRadius:12
+  }
+})
+
+c)HW with styles
+----------------
+import React, {Component} from 'react';
+import { View, Text, StyleSheet} from 'react-native';
+
+export default class App extends Component {
+  constructor(){
+    super();
+    this.state={
+      user:"Nevil"
+    }
+  }
+  render() {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.welcomeText}>Hello {this.state.user}, Welcome to React Native!!!</Text>
+      </View>
+    )
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'whitesmoke'
+  },
+  welcomeText: {
+    margin: 24,
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center'
+  }
+})
+
+3. Image
+++++++++
+import React, {Component} from 'react';
+import { View, Text, Image, StyleSheet} from 'react-native';
+
+export default class App extends Component {
+  constructor(){
+    super();
+    this.state={
+      user:"Nevil"
+    }
+  }
+  render() {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.welcome}>Hello {this.state.user}, Welcome to React Native!!!</Text>
+        <Image style={styles.image}  source={{uri: 'https://upload.wikimedia.org/wikipedia/commons/d/de/Bananavarieties.jpg'}} /> 
+      </View>
+    )
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'whitesmoke'
+  },
+  welcome: {
+    margin: 24,
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center'
+  },
+  image: {
+    width: 200,
+    height: 200
+  }
+})
+
+4. ScrollView
++++++++++++++
+import React from 'react';
+import { ScrollView, View, Text, StyleSheet} from 'react-native';
+import { Constants } from 'expo';
+
+export default class App extends React.Component {
+  render() {
+    return (
+      <ScrollView style={styles.container}>
+        <View style={styles.boxLarge} >
+          <Text>V1</Text>
+        </View>
+        <ScrollView horizontal>
+          <View style={styles.boxSmall} >
+            <Text>V2H1</Text>
+          </View>
+          <View style={styles.boxSmall} >
+            <Text>V2H2</Text>
+          </View>
+          <View style={styles.boxSmall} >
+            <Text>V2H3</Text>
+          </View>
+        </ScrollView>
+        <View style={styles.boxSmall} >
+          <Text>V3</Text>
+        </View>
+        <View style={styles.boxLarge} >
+          <Text>V4</Text>
+        </View>
+      </ScrollView>
+    )
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    paddingTop: Constants.statusBarHeight,
+    flex: 1
+  },
+  boxSmall: {
+    width: 200,
+    height: 200,
+    marginBottom: 5,
+    marginRight: 5,
+    backgroundColor: 'blue',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontWeight: 'bold'
+  },
+  boxLarge: {
+    width: 300,
+    height: 300,
+    marginBottom: 5,
+    marginRight: 5,
+    backgroundColor: 'green',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontWeight: 'bold'
+  },
+})

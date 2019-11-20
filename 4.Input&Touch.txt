@@ -1,0 +1,243 @@
+7. TextInput
+------------
+import React, { Component } from 'react';
+import { View, Text, StyleSheet, TextInput } from 'react-native';
+import { Constants } from 'expo';
+
+export default class App extends Component {
+  constructor(){
+	  super();
+	  this.state = {
+		  name: ''
+	  }
+	}
+
+	onChangeText(value){
+	  this.setState({
+		  name: value
+	  })
+	}
+
+	render() {
+	  return (
+      <View style={styles.container}>
+        <TextInput 
+          style={{height: 40}} 
+          placeholder='Enter Name' 
+          value={this.state.name}
+          onChangeText = {(value) => this.onChangeText(value)}
+        />
+        <Text style={styles.paragraph}>Hello {this.state.name}</Text>
+      </View>
+			);
+		}
+}
+
+const styles = StyleSheet.create({
+  container: {
+    paddingTop: Constants.statusBarHeight,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  paragraph: {
+    margin: 24,
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#34495e',
+  }
+})
+
+8. Switch
+----------
+import React, { Component } from 'react';
+import { Text, View, StyleSheet, Switch } from 'react-native';
+import { Constants } from 'expo';
+
+export default class App extends Component {
+  constructor(){
+    super();
+    this.state = {
+    name: 'NJP',
+    showName: true
+    }
+  }
+
+  onSwitchChange(value){
+    this.setState({
+    showName: value
+    })
+  }
+
+  render() {
+    let name = this.state.showName ? this.state.name:'Guest'
+    return (
+      <View style={styles.container}>
+          <Text style={styles.paragraph}>Hello {name}</Text>
+          <Switch value={this.state.showName} onValueChange={(value) => this.onSwitchChange(value)}/>
+      </View>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    paddingTop: Constants.statusBarHeight,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  paragraph: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#34495e',
+  }
+})
+	
+9. Picker
+---------
+import React, { Component } from 'react';
+import { View, StyleSheet, Picker } from 'react-native';
+import { Constants } from 'expo';
+
+export default class App extends Component {
+  constructor(){
+    super();
+    this.state ={
+      notify: "sms"
+    }
+  }
+ 
+  render() {
+		return (
+		  <View style={styles.container}>
+        <Picker
+          selectedValue={this.state.notify}
+          style={{ height: 50, width: 100 }}
+          onValueChange={(itemValue, itemIndex) => this.setState({notify: itemValue})}>
+          <Picker.Item label="Call" value="call" />
+          <Picker.Item label="Message" value="sms" />
+          <Picker.Item label="Email" value="Email" />
+        </Picker>
+		  </View>
+		);
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    paddingTop: Constants.statusBarHeight,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
+})
+
+10. Slider
+----------
+import React, { Component } from 'react';
+import { View, StyleSheet, Text, Slider } from 'react-native';
+import { Constants } from 'expo';
+
+export default class App extends Component {
+  constructor(){
+    super();
+    this.state ={
+      rooms: 2
+    }
+  }
+ 
+  render() {
+		return (
+		  <View style={styles.container}>
+        <Text>Rooms required: {this.state.rooms}</Text>
+        <Slider 
+          minimumValue="1"
+          maximumValue="5"
+          step="1"
+          value={this.state.rooms}
+          onSlidingComplete={(value) => (this.setState({rooms:value}))}
+          style={{ height: 50, width: 100 }}
+        />
+		  </View>
+		);
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    paddingTop: Constants.statusBarHeight,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
+})
+
+11. Touchable
+--------------
+import React, { Component } from 'react';
+import { Text, View, StyleSheet, Button, TouchableHighlight, TouchableOpacity, Alert } from 'react-native';
+import { Constants } from 'expo';
+
+export default class App extends Component {
+  onPressButton() {
+		Alert.alert('You tapped the button!')
+	}
+
+	onLongPressButton() {
+		Alert.alert('You long-pressed the button!')
+	}
+
+  render() {
+		return (
+		  <View style={styles.container}>
+			<Button
+			  onPress={this.onPressButton}
+			  title="Tap Me"
+			  color="#841584"
+			/>
+			<TouchableHighlight 
+			  onPress={this.onPressButton} 
+			  underlayColor="white">
+			  <View style={styles.button}>
+				<Text style={styles.buttonText}>TouchableHighlight</Text>
+			  </View>
+			</TouchableHighlight>
+			<TouchableOpacity 
+			  onPress={this.onPressButton}>
+			  <View style={styles.button}>
+				<Text style={styles.buttonText}>TouchableOpacity</Text>
+			  </View>
+			</TouchableOpacity>
+			<TouchableHighlight 
+			  onPress={this.onPressButton} 
+			  onLongPress={this.onLongPressButton} underlayColor="white">
+			  <View style={styles.button}>
+				<Text style={styles.buttonText}>Touchable with Long Press</Text>
+			  </View>
+			</TouchableHighlight>
+		  </View>
+		);
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    paddingTop: Constants.statusBarHeight,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  button: {
+    margin: 30,
+    width: 260,
+    alignItems: 'center',
+    backgroundColor: '#2196F3'
+  },
+    buttonText: {
+    padding: 20,
+    color: 'white'
+  }
+})

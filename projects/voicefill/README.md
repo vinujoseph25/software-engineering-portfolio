@@ -28,6 +28,6 @@ The extension combines background and content scripts with browser UI components
 
 Legacy portfolio project. The implementation is retained because it demonstrates browser engineering, low-level voice processing integration, and experimentation beyond conventional CRUD applications.
 
-## Note
+## Repository note
 
-The repository includes historical vendor assets and a packaged extension build. These are retained as part of the original project context.
+Generated packaged artifacts have been removed from the portfolio copy. The source implementation and relevant runtime assets are retained so the engineering approach remains reviewable.

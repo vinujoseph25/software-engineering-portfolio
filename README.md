@@ -1,6 +1,6 @@
 # Vinu Joseph — Software Engineering Portfolio
 
-A curated portfolio of software engineering work spanning full-stack web development, frontend architecture, mobile applications, browser extensions, authentication, and JavaScript engineering.
+A curated portfolio of software engineering work spanning full-stack web development, frontend architecture, mobile applications, authentication, and JavaScript engineering.
 
 The repository is organised around a small set of featured projects, supported by selected technical examples. Historical exercises and low-value generated artifacts are intentionally excluded from the primary portfolio surface.
 
@@ -9,7 +9,6 @@ The repository is organised around a small set of featured projects, supported b
 | Project | What it demonstrates | Stack |
 |---|---|---|
 | **[DevConnector](projects/devconnector/)** | Full-stack social platform for developers, including authentication, profiles, posts, and API-driven workflows | React, Node.js, Express, MongoDB, JWT |
-| **[VoiceFill](projects/voicefill/)** | Browser voice-input extension with speech/voice activity processing and WebAssembly integration | JavaScript, WebRTC VAD, WebAssembly |
 | **[Social Authentication](projects/social-authentication/)** | OAuth-based authentication flows for mobile applications | React Native, Node.js, Passport, Google OAuth, Facebook Login |
 | **[React SSR](projects/react-ssr/)** | Server-side rendering architecture and React application delivery | React, Node.js, Express, Webpack |
 
@@ -20,7 +19,6 @@ The repository is organised around a small set of featured projects, supported b
 - React and state-driven frontend development
 - React Native mobile development
 - Authentication and OAuth integrations
-- Browser extension engineering
 - JavaScript and asynchronous programming
 - Webpack and frontend build tooling
 - Database-backed application development
@@ -40,7 +38,7 @@ archive/        Historical material retained for reference
 
 This repository is intentionally curated rather than presented as a dump of every historical exercise. Featured projects receive professional documentation, while supporting examples are kept separate from the primary portfolio narrative.
 
-Obsolete build artifacts, accidental files, duplicate legacy rendering exercises, and private/internal learning notes are removed from the active repository surface.
+Obsolete build artifacts, accidental files, duplicate legacy rendering exercises, private/internal learning notes, and projects with unresolved security or portability concerns are removed from the active portfolio surface.
 
 Some featured projects are legacy implementations and use older framework versions. They are retained because they demonstrate practical engineering work and provide useful context on technologies and patterns used at the time.
 

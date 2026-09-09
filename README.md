@@ -2,7 +2,7 @@
 
 A curated portfolio of software engineering work spanning full-stack web development, frontend architecture, mobile applications, browser extensions, authentication, and JavaScript engineering.
 
-The repository brings together selected projects and technical work from earlier engineering experience, with the goal of presenting practical implementation skills, architectural thinking, and hands-on problem solving.
+The repository is organised around a small set of featured projects, supported by selected technical examples. Historical exercises and low-value generated artifacts are intentionally excluded from the primary portfolio surface.
 
 ## Featured Projects
 
@@ -29,18 +29,20 @@ The repository brings together selected projects and technical work from earlier
 
 ```text
 projects/       Featured, portfolio-ready applications
-frontend/       React and frontend engineering work
-mobile/         React Native and mobile experiments
-javascript/     JavaScript language and asynchronous programming work
-learning/       Supporting learning material and technical notes
+frontend/       Supporting frontend and Redux engineering examples
+mobile/         Supporting React Native engineering examples
+javascript/     JavaScript concepts and asynchronous programming
+learning/       Additional learning material kept only where useful
 archive/        Historical material retained for reference
 ```
 
-## Portfolio Approach
+## Curation Principles
 
-This repository is intentionally curated rather than presented as a dump of every historical exercise. Featured projects are separated from supporting learning work so that the engineering depth and practical applications are easier to evaluate.
+This repository is intentionally curated rather than presented as a dump of every historical exercise. Featured projects receive professional documentation, while supporting examples are kept separate from the primary portfolio narrative.
 
-Some projects are legacy implementations and use older versions of their respective frameworks. They are retained because they demonstrate real engineering work and provide useful context on technologies and patterns used at the time.
+Obsolete build artifacts, accidental files, duplicate legacy rendering exercises, and private/internal learning notes are removed from the active repository surface.
+
+Some featured projects are legacy implementations and use older framework versions. They are retained because they demonstrate practical engineering work and provide useful context on technologies and patterns used at the time.
 
 ## Security
 

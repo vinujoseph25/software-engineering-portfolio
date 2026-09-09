@@ -4,8 +4,8 @@
 
 let LANGUAGES = {};
 let LANGUAGE;
-let sttApi = "Google"; //or Mozilla
-const sttApiKey = "[REDACTED]";
+let sttApi = "Mozilla"; // or Google
+const sttApiKey = "";
 
 const languagePromise = fetch(browser.extension.getURL("languages.json"))
   .then(response => {
@@ -44,7 +44,7 @@ const languagePromise = fetch(browser.extension.getURL("languages.json"))
     "https://speech.googleapis.com/v1/speech:recognize";
   const MOZILLA_STT_SERVER_URL = "https://speaktome-2.services.mozilla.com";
   let STT_SERVER_URL;
-  if (sttApi === "Google") {
+  if (sttApi === "Google" && sttApiKey) {
     STT_SERVER_URL = GOOGLE_STT_SERVER_URL + "?key=" + sttApiKey;
   } else {
     STT_SERVER_URL = MOZILLA_STT_SERVER_URL;
@@ -62,8 +62,6 @@ const languagePromise = fetch(browser.extension.getURL("languages.json"))
   };
 
   browser.runtime.onMessage.addListener(request => {
-    // this.icon.classList.add("stm-hidden");
-    // document.getElementsByClassName("stm-icon")[0].disabled = true;
     metrics.start_session("toolbar");
     SpeakToMePopup.showAt(0, 0);
     stm_start();
@@ -106,7 +104,6 @@ const languagePromise = fetch(browser.extension.getURL("languages.json"))
         </form>`;
 
   const SpeakToMePopup = {
-    // closeClicked used to skip out of media recording handling
     closeClicked: false,
     init: () => {
       console.log(`SpeakToMePopup init`);
@@ -153,7 +150,6 @@ const languagePromise = fetch(browser.extension.getURL("languages.json"))
       this.inject.innerHTML = SUBMISSION_MARKUP;
     },
 
-    // Returns a Promise that resolves once the "Stop" button is clicked.
     wait_for_stop: () => {
       console.log(`SpeakToMePopup wait_for_stop`);
       return new Promise((resolve, reject) => {
@@ -161,7 +157,6 @@ const languagePromise = fetch(browser.extension.getURL("languages.json"))
       });
     },
 
-    // Returns a Promise that resolves to the chosen text.
     choose_item: data => {
       console.log(`SpeakToMePopup choose_item`);
       this.inject.innerHTML = SELECTION_MARKUP;
@@ -204,7 +199,6 @@ const languagePromise = fetch(browser.extension.getURL("languages.json"))
         input.focus();
 
         input.addEventListener("keypress", e => {
-          // e.preventDefault();
           if (e.keyCode === 13) {
             e.preventDefault();
             list.classList.add("close");
@@ -285,7 +279,6 @@ const languagePromise = fetch(browser.extension.getURL("languages.json"))
     }
   };
 
-  // Main startup for STM voice stuff
   const stm_start = () => {
     const constraints = { audio: true };
     let chunks = [];
@@ -293,34 +286,27 @@ const languagePromise = fetch(browser.extension.getURL("languages.json"))
     navigator.mediaDevices
       .getUserMedia(constraints)
       .then(function(stream) {
-        // Build the WebAudio graph we'll be using
         let audioContext = new AudioContext();
         let sourceNode = audioContext.createMediaStreamSource(stream);
         let analyzerNode = audioContext.createAnalyser();
         let outputNode = audioContext.createMediaStreamDestination();
-        // make sure we're doing mono everywhere
         sourceNode.channelCount = 1;
         analyzerNode.channelCount = 1;
         outputNode.channelCount = 1;
-        // connect the nodes together
         sourceNode.connect(analyzerNode);
         analyzerNode.connect(outputNode);
-        // and set up the recorder
+
         const options = {
           audioBitsPerSecond: 16000,
           mimeType: "audio/ogg"
         };
 
-        // VAD initializations
-        // console.log("Sample rate: ", audioContext.sampleRate);
         const bufferSize = 2048;
-        // create a javascript node
         let scriptprocessor = audioContext.createScriptProcessor(
           bufferSize,
           1,
           1
         );
-        // specify the processing function
         stm_vad.reset();
         scriptprocessor.onaudioprocess = stm_vad.recorderProcess;
         stm_vad.stopGum = () => {
@@ -330,10 +316,8 @@ const languagePromise = fetch(browser.extension.getURL("languages.json"))
           sourceNode.disconnect(analyzerNode);
           analyzerNode.disconnect(outputNode);
         };
-        // connect stream to our recorder
         sourceNode.connect(scriptprocessor);
 
-        // MediaRecorder initialization
         mediaRecorder = new MediaRecorder(outputNode.stream, options);
 
         SpeakToMePopup.wait_for_stop().then(
@@ -365,16 +349,12 @@ const languagePromise = fetch(browser.extension.getURL("languages.json"))
 
         mediaRecorder.onstop = e => {
           metrics.stop_recording();
-          // handle clicking on close element by dumping recording data
           if (SpeakToMePopup.closeClicked) {
             SpeakToMePopup.closeClicked = false;
             return;
           }
 
-          console.log(e.target);
           document.getElementById("stm-levels").hidden = true;
-          console.log("mediaRecorder onStop");
-          // We stopped the recording, send the content to the STT server.
           mediaRecorder = null;
           audioContext = null;
           sourceNode = null;
@@ -435,7 +415,7 @@ const languagePromise = fetch(browser.extension.getURL("languages.json"))
                 fail_gracefully(`Fetch error: ${error}`);
               });
           }
-          if (sttApi === "Google") {
+          if (sttApi === "Google" && sttApiKey) {
             blobToBase64(blob, finalBase64);
           } else {
             headers = {
@@ -456,7 +436,6 @@ const languagePromise = fetch(browser.extension.getURL("languages.json"))
       });
   };
 
-  // Click handler for stm icon
   const on_stm_icon_click = event => {
     if (SpeakToMePopup.cancelFetch) {
       SpeakToMePopup.cancelFetch = false;
@@ -476,19 +455,13 @@ const languagePromise = fetch(browser.extension.getURL("languages.json"))
     },
     false
   );
-  // Helper to handle background visualization
-  const visualize = analyzerNode => {
-    const MIN_DB_LEVEL = -85; // The dB level that is 0 in the levels display
-    const MAX_DB_LEVEL = -30; // The dB level that is 100% in the levels display
 
-    // Set up the analyzer node, and allocate an array for its data
-    // FFT size 64 gives us 32 bins. But those bins hold frequencies up to
-    // 22kHz or more, and we only care about visualizing lower frequencies
-    // which is where most human voice lies, so we use fewer bins
+  const visualize = analyzerNode => {
+    const MIN_DB_LEVEL = -85;
+    const MAX_DB_LEVEL = -30;
+
     analyzerNode.fftSize = 64;
     const frequencyBins = new Float32Array(14);
-
-    // Clear the canvas
 
     var popupWidth = document.getElementById("stm-popup").offsetWidth;
 
@@ -502,20 +475,15 @@ const languagePromise = fetch(browser.extension.getURL("languages.json"))
     context.clearRect(0, 0, levels.width, levels.height);
 
     if (levels.hidden) {
-      // If we've been hidden, return right away without calling rAF again.
       return;
     }
 
-    // Get the FFT data
     analyzerNode.getFloatFrequencyData(frequencyBins);
 
-    // Display it as a barchart.
-    // Drop bottom few bins, since they are often misleadingly high
     const skip = 2;
     const n = frequencyBins.length - skip;
     const dbRange = MAX_DB_LEVEL - MIN_DB_LEVEL;
 
-    // Loop through the values and draw the bars
     context.strokeStyle = "#d1d2d3";
 
     for (let i = 0; i < n; i++) {
@@ -525,7 +493,6 @@ const languagePromise = fetch(browser.extension.getURL("languages.json"))
       if (diameter < 0) {
         continue;
       }
-      // Display a bar for this value.
       var alpha = diameter / 500;
       if (alpha > 0.2) alpha = 0.2;
       else if (alpha < 0.1) alpha = 0.1;
@@ -536,14 +503,13 @@ const languagePromise = fetch(browser.extension.getURL("languages.json"))
       context.ellipse(xPos, yPos, diameter, diameter, 0, 0, 2 * Math.PI);
       if (diameter > 90 && diameter < 360) context.stroke();
     }
-    // Update the visualization the next time we can
+
     requestAnimationFrame(function() {
       visualize(analyzerNode);
     });
   };
 
   const display_options = items => {
-    // Filter the array for empty items and normalize the text.
     let data;
     if (sttApi === "Google") {
       data = items
@@ -568,6 +534,7 @@ const languagePromise = fetch(browser.extension.getURL("languages.json"))
           };
         });
     }
+
     if (data.length === 0) {
       fail_gracefully(`EMPTYRESULTS`);
       return;
@@ -584,12 +551,10 @@ const languagePromise = fetch(browser.extension.getURL("languages.json"))
       if (val0 - val1 > 0.2) {
         return true;
       }
+
       return false;
     };
 
-    // if the first result has a high enough confidence, or the distance
-    // to the second large enough just
-    // use it directly.
     data.sort(function(a, b) {
       return b.confidence - a.confidence;
     });
@@ -639,7 +604,6 @@ const languagePromise = fetch(browser.extension.getURL("languages.json"))
         }
         metrics.end_attempt(input.confidence, "accepted", input.idx_suggestion);
         metrics.end_session();
-        // Once a choice is made, close the popup.
         SpeakToMePopup.hide();
       },
       id => {
@@ -693,8 +657,6 @@ const languagePromise = fetch(browser.extension.getURL("languages.json"))
     this.webrtc_main = Module.cwrap("main");
     this.webrtc_main();
     this.webrtc_setmode = Module.cwrap("setmode", "number", ["number"]);
-    // set_mode defines the aggressiveness degree of the voice activity detection algorithm
-    // for more info see: https://github.com/mozilla/gecko/blob/central/media/webrtc/trunk/webrtc/common_audio/vad/vad_core.h#L68
     this.webrtc_setmode(3);
     this.webrtc_process_data = Module.cwrap("process_data", "number", [
       "number",
@@ -704,14 +666,9 @@ const languagePromise = fetch(browser.extension.getURL("languages.json"))
       "number",
       "number"
     ]);
-    // frame length that should be passed to the vad engine. Depends on audio sample rate
-    // https://github.com/mozilla/gecko/blob/central/media/webrtc/trunk/webrtc/common_audio/vad/vad_core.h#L106
     this.sizeBufferVad = 480;
-    // minimum of voice (in milliseconds) that should be captured to be considered voice
     this.minvoice = 250;
-    // max amount of silence (in milliseconds) that should be captured to be considered end-of-speech
     this.maxsilence = 1500;
-    // max amount of capturing time (in seconds)
     this.maxtime = 6;
 
     this.reset = function() {
@@ -728,19 +685,15 @@ const languagePromise = fetch(browser.extension.getURL("languages.json"))
       this.done = false;
     };
 
-    // function that returns if the specified buffer has silence of speech
     this.isSilence = function(buffer_pcm) {
-      // Get data byte size, allocate memory on Emscripten heap, and get pointer
       const nDataBytes = buffer_pcm.length * buffer_pcm.BYTES_PER_ELEMENT;
       const dataPtr = Module._malloc(nDataBytes);
-      // Copy data to Emscripten heap (directly accessed from Module.HEAPU8)
       const dataHeap = new Uint8Array(
         Module.HEAPU8.buffer,
         dataPtr,
         nDataBytes
       );
       dataHeap.set(new Uint8Array(buffer_pcm.buffer));
-      // Call function and get result
       const result = this.webrtc_process_data(
         dataHeap.byteOffset,
         buffer_pcm.length,
@@ -749,7 +702,6 @@ const languagePromise = fetch(browser.extension.getURL("languages.json"))
         buffer_pcm[100],
         buffer_pcm[2000]
       );
-      // Free memory
       Module._free(dataHeap.byteOffset);
       return result;
     };
@@ -764,7 +716,6 @@ const languagePromise = fetch(browser.extension.getURL("languages.json"))
     this.recorderProcess = function(e) {
       const buffer_pcm = new Int16Array(e.inputBuffer.getChannelData(0).length);
       stm_vad.floatTo16BitPCM(buffer_pcm, e.inputBuffer.getChannelData(0));
-      // algorithm used to determine if the user stopped speaking or not
       for (
         let i = 0;
         i < Math.ceil(buffer_pcm.length / stm_vad.sizeBufferVad) &&
@@ -774,12 +725,10 @@ const languagePromise = fetch(browser.extension.getURL("languages.json"))
         const start = i * stm_vad.sizeBufferVad;
         let end = start + stm_vad.sizeBufferVad;
         if (start + stm_vad.sizeBufferVad > buffer_pcm.length) {
-          // store to the next buffer
           stm_vad.buffer_vad.set(buffer_pcm.slice(start));
           stm_vad.leftovers = buffer_pcm.length - start;
         } else {
           if (stm_vad.leftovers > 0) {
-            // we have this.leftovers from previous array
             end = end - this.leftovers;
             stm_vad.buffer_vad.set(
               buffer_pcm.slice(start, end),
@@ -787,7 +736,6 @@ const languagePromise = fetch(browser.extension.getURL("languages.json"))
             );
             stm_vad.leftovers = 0;
           } else {
-            // send to the vad
             stm_vad.buffer_vad.set(buffer_pcm.slice(start, end));
           }
           const vad = stm_vad.isSilence(stm_vad.buffer_vad);
@@ -842,8 +790,6 @@ const languagePromise = fetch(browser.extension.getURL("languages.json"))
   };
 })();
 
-// Creation of the configuration object
-// that will be pick by emscripten module
 var Module = {
   preRun: [],
   postRun: [],
@@ -876,7 +822,6 @@ var Module = {
 let stm_vad;
 Module.setStatus("Loading webrtc_vad...");
 window.onerror = function(event) {
-  // TODO: do not warn on ok events like simulating an infinite loop or exitStatus
   Module.setStatus("Exception thrown, see JavaScript console");
   Module.setStatus = function(text) {
     if (text) {
@@ -884,6 +829,7 @@ window.onerror = function(event) {
     }
   };
 };
+
 Module.noInitialRun = true;
 Module["onRuntimeInitialized"] = function() {
   stm_vad = new SpeakToMeVad();
